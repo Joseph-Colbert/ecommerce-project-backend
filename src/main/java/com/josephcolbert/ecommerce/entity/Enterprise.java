@@ -4,6 +4,8 @@ import lombok.Data;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name="enterprise")
 @Data    // Genera los getters y setters por detras
@@ -16,6 +18,9 @@ public class Enterprise {
     @ManyToOne
     @JoinColumn(name = "user_enterprise_enterprise_id", nullable = false)
     private UserEnterprise user;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")    // por la coleccion de productos
+    private Set<Product> products;
 
     @Column(name = "name")
     private String name;

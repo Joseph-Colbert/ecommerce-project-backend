@@ -22,11 +22,11 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private ProductCategory category;
-    /*
+
     @ManyToOne
-    @JoinColumn(name = "enterprise_id", nullable = false)
+    @JoinColumn(name = "product_enterprise_id", nullable = false)
     private Enterprise enterprise;
-    */
+
     @Column(name = "sku")
     private String sku;
 
