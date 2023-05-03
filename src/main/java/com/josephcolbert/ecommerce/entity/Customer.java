@@ -1,6 +1,7 @@
 package com.josephcolbert.ecommerce.entity;
 
 
+import com.josephcolbert.ecommerce.security.securityEntity.Rol;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,9 @@ public class Customer {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
+    private String password;
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<Order> orders = new HashSet<>();
 
@@ -41,4 +45,5 @@ public class Customer {
             order.setCustomer(this);
         }
     }
+
 }

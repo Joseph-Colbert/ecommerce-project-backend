@@ -7,6 +7,7 @@ import com.josephcolbert.ecommerce.entity.Customer;
 import com.josephcolbert.ecommerce.entity.Order;
 import com.josephcolbert.ecommerce.entity.OrderItem;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -42,6 +43,16 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         //populate customer with order
         Customer customer = purchase.getCustomer();
+
+        //verificar si es un cliente existente
+        String theEmail = customer.getEmail();
+
+        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+
+        if (customerFromDB != null) {
+            customer = customerFromDB;
+        }
+
         customer.add(order);
 
         //save to the database
