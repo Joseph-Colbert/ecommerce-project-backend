@@ -1,11 +1,25 @@
 package com.josephcolbert.ecommerce.controller;
 
+import com.josephcolbert.ecommerce.dto.ProductDto;
 import com.josephcolbert.ecommerce.dto.Purchase;
 import com.josephcolbert.ecommerce.dto.PurchaseResponse;
+import com.josephcolbert.ecommerce.entity.Product;
+import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.josephcolbert.ecommerce.service.CheckoutService;
+import com.josephcolbert.ecommerce.service.ProductService;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("http//:localhost:4200")
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/checkout")
 public class CheckoutController {
@@ -17,8 +31,62 @@ public class CheckoutController {
     }
 
     @PostMapping("/purchase")
-    public PurchaseResponse placeOreder(@RequestBody Purchase purchase) {
+    public PurchaseResponse placeOrder(@RequestBody Purchase purchase) {
         PurchaseResponse purchaseResponse = checkoutService.placeOrder(purchase);
         return purchaseResponse;
     }
+
+    //para el crud
+    @Autowired
+    ProductService productService;
+
+
+    @PostMapping("/create")
+    public ResponseEntity<?> create(@RequestBody ProductDto productDto) {
+        if (StringUtils.isBlank(productDto.getName()))
+            return new ResponseEntity(new MessageDto("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
+        if (productDto.getUnitPrice() == null || productDto.getUnitPrice().compareTo(BigDecimal.ZERO) < 0)
+            return new ResponseEntity(new MessageDto("El precio debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
+      /*  if (productService.existByName(productDto.getName()))
+            return new ResponseEntity(new MessageDto("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);*/
+        Product product = new Product();
+        product.setName(productDto.getName());
+        product.setActive(productDto.isActive());
+        product.setDateCreated(new Date());
+        product.setDescription(productDto.getDescription());
+        product.setSku(productDto.getSku());
+        product.setImageUrl(productDto.getImageUrl());
+        product.setLastUpdated(new Date());
+        product.setUnitsInStock(productDto.getUnitsInStock());
+        product.setUnitPrice(productDto.getUnitPrice());
+
+        productService.save(product);
+        return new ResponseEntity(new MessageDto("producto creado"), HttpStatus.OK);
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> update(@PathVariable("id")int id, @RequestBody ProductDto productDto) {
+        if (!productService.existById(id))
+            return new ResponseEntity(new MessageDto("No existe"), HttpStatus.NOT_FOUND);
+      /*  if (productService.existByName(productDto.getName()) && productService.getByName(productDto.getName()).get().getId() != id)
+            return new ResponseEntity(new MessageDto("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);*/
+        if (StringUtils.isBlank(productDto.getName()))
+            return new ResponseEntity(new MessageDto("El nombre es obligatorio"), HttpStatus.BAD_REQUEST);
+        if (productDto.getUnitPrice() == null ||  productDto.getUnitPrice().compareTo(BigDecimal.ZERO) < 0)
+            return new ResponseEntity(new MessageDto("El precio debe ser mayor a 0"), HttpStatus.BAD_REQUEST);
+
+        Product product = productService.getOne(id).get();
+        product.setName(productDto.getName());
+        product.setUnitPrice(productDto.getUnitPrice());
+        productService.save(product);
+        return new ResponseEntity(new MessageDto("producto actualizado"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id")int id) {
+        if (!productService.existById(id))
+            return new ResponseEntity(new MessageDto("No existe"), HttpStatus.NOT_FOUND);
+        productService.delete(id);
+        return new ResponseEntity(new MessageDto("Producto eliminado"), HttpStatus.OK);
+        }
 }

@@ -47,7 +47,9 @@ public class MainSecurity {
         http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeHttpRequests().requestMatchers("/auth/**").permitAll().anyRequest().authenticated();
+        http.authorizeHttpRequests().requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/api/**").authenticated().anyRequest().authenticated();
+
 
         http.exceptionHandling().authenticationEntryPoint(jwtEntryPoint);
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

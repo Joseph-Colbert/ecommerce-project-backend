@@ -32,7 +32,7 @@ public class Customer {
     @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders = new HashSet<>();
 
     public void add (Order order) {
