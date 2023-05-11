@@ -1,12 +1,12 @@
 package com.josephcolbert.ecommerce.security.securityController;
 
+import com.josephcolbert.ecommerce.entity.Customer;
 import com.josephcolbert.ecommerce.security.jwt.JwtProvider;
 import com.josephcolbert.ecommerce.security.securityDto.JwtDto;
 import com.josephcolbert.ecommerce.security.securityDto.LoginUser;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.josephcolbert.ecommerce.security.securityDto.NewUser;
 import com.josephcolbert.ecommerce.security.securityEntity.Rol;
-import com.josephcolbert.ecommerce.security.securityEntity.User;
 import com.josephcolbert.ecommerce.security.securityEnums.RolName;
 import com.josephcolbert.ecommerce.security.securityService.RolService;
 import com.josephcolbert.ecommerce.security.securityService.UserService;
@@ -55,15 +55,15 @@ public class AuthController {
         if(userService.existsByEmail(newUser.getEmail()))
             return new ResponseEntity(new MessageDto("Ese email ya existe"), HttpStatus.BAD_REQUEST);
 
-        User user = new User(newUser.getName(), newUser.getUserName(), newUser.getEmail(), passwordEncoder.encode((newUser.getPassword())));
+        Customer customer = new Customer(newUser.getName(), newUser.getUserName(), newUser.getEmail(), passwordEncoder.encode((newUser.getPassword())));
 
         Set<Rol> roles = new HashSet<>();
         roles.add(rolService.getByRolName(RolName.ROLE_USER).get());
 
         if(newUser.getRoles().contains("admin"))
             roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
-        user.setRoles(roles);
-        userService.save(user);
+        customer.setRoles(roles);
+        userService.save(customer);
         return new ResponseEntity(new MessageDto("Usuario registrado"), HttpStatus.CREATED);
     }
 
@@ -72,7 +72,7 @@ public class AuthController {
         if(bindingResult.hasErrors())
             return new ResponseEntity(new MessageDto("Campos mal ingresados"), HttpStatus.BAD_REQUEST);
 
-        Authentication authentication =
+                Authentication authentication =
                 authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUser.getUserName(), loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtProvider.generateToken(authentication);

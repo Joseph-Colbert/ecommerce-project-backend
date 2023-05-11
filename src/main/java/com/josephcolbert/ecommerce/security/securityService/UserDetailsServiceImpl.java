@@ -1,8 +1,8 @@
 package com.josephcolbert.ecommerce.security.securityService;
 
+import com.josephcolbert.ecommerce.dao.CustomerRepository;
+import com.josephcolbert.ecommerce.entity.Customer;
 import com.josephcolbert.ecommerce.security.securityEntity.PrincipalUser;
-import com.josephcolbert.ecommerce.security.securityEntity.User;
-import com.josephcolbert.ecommerce.security.securityRepository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(userName).get();
+        Customer user = customerRepository.findByUserName(userName).get();
         return PrincipalUser.build(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.josephcolbert.ecommerce.security.securityEntity;
 
+import com.josephcolbert.ecommerce.entity.Customer;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,7 +28,7 @@ public class PrincipalUser implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static PrincipalUser build(User user) {
+    public static PrincipalUser build(Customer user) {
         List<GrantedAuthority> authorities =
                         user.getRoles().stream().map(rol ->
                         new SimpleGrantedAuthority(rol.getRolName().name())).collect(Collectors.toList());

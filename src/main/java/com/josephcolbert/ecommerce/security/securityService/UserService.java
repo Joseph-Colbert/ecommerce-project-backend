@@ -1,7 +1,7 @@
 package com.josephcolbert.ecommerce.security.securityService;
 
-import com.josephcolbert.ecommerce.security.securityEntity.User;
-import com.josephcolbert.ecommerce.security.securityRepository.UserRepository;
+import com.josephcolbert.ecommerce.dao.CustomerRepository;
+import com.josephcolbert.ecommerce.entity.Customer;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,22 +13,22 @@ import java.util.Optional;
 public class UserService {
 
     @Autowired
-    UserRepository userRepository;
+    CustomerRepository customerRepository;
 
-    public Optional<User> getByUserName(String userName) {
-        return userRepository.findByUserName(userName);
+    public Optional<Customer> getByUserName(String userName) {
+        return customerRepository.findByUserName(userName);
     }
 
     public boolean existsByUserName(String userName) {
-        return userRepository.existsByUserName(userName);
+        return customerRepository.existsByUserName(userName);
     }
 
     public boolean existsByEmail(String email) {
-        return userRepository.existsByEmail(email);
+        return customerRepository.existsByEmail(email);
     }
 
-    public void save(User user) {
-        userRepository.save(user);
+    public void save(Customer customer) {
+        customerRepository.save(customer);
     }
 
 }
