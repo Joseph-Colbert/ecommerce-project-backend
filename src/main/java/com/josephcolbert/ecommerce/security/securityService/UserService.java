@@ -19,6 +19,11 @@ public class UserService {
         return customerRepository.findByUserName(userName);
     }
 
+    public Optional<Customer> getByUserNameOrEmail(String nameOrEmail) {
+        return customerRepository.findByUserNameOrEmail(nameOrEmail,nameOrEmail);
+    }
+
+
     public boolean existsByUserName(String userName) {
         return customerRepository.existsByUserName(userName);
     }

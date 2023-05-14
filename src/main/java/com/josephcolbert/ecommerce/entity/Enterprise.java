@@ -44,4 +44,20 @@ public class Enterprise {
     @Column(name = "address")
     private String address;
 
+    public Enterprise() {
+
+    }
+
+    public Enterprise(Long id, UserEnterprise user, Set<Product> products, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
+        this.id = id;
+        this.user = user;
+        this.products = products;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.mail = mail;
+        this.phone = phone;
+        this.ci = ci;
+        this.categoryE = categoryE;
+        this.address = address;
+    }
 }
