@@ -56,4 +56,21 @@ public class MainSecurity {
         return http.build();
     }
 
+  /*  @Bean        codigo para brindar autorizacion de visualizacion
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.cors();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeRequests()
+                .requestMatchers("/auth/**", "/api/**").permitAll()
+                .requestMatchers("/email-password/**").authenticated()
+                .anyRequest().authenticated();
+
+        http.exceptionHandling().authenticationEntryPoint(jwtEntryPoint);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }*/
+
 }
+

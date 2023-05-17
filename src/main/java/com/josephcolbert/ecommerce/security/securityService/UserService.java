@@ -23,6 +23,11 @@ public class UserService {
         return customerRepository.findByUserNameOrEmail(nameOrEmail,nameOrEmail);
     }
 
+    public Optional<Customer> getByTokenPassword(String tokenPassword) {
+        return customerRepository.findByTokenPassword(tokenPassword);
+    }
+
+
 
     public boolean existsByUserName(String userName) {
         return customerRepository.existsByUserName(userName);
