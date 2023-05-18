@@ -1,5 +1,6 @@
 package com.josephcolbert.ecommerce.controller;
 
+import com.josephcolbert.ecommerce.dto.PaymentInfo;
 import com.josephcolbert.ecommerce.dto.ProductDto;
 import com.josephcolbert.ecommerce.dto.Purchase;
 import com.josephcolbert.ecommerce.dto.PurchaseResponse;
@@ -7,6 +8,8 @@ import com.josephcolbert.ecommerce.entity.Product;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.josephcolbert.ecommerce.service.CheckoutService;
 import com.josephcolbert.ecommerce.service.ProductService;
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +38,22 @@ public class CheckoutController {
         PurchaseResponse purchaseResponse = checkoutService.placeOrder(purchase);
         return purchaseResponse;
     }
+
+    @PostMapping("/payment-intent")
+    public ResponseEntity<String> createPaymentIntent(@RequestBody PaymentInfo paymentInfo) throws StripeException {
+
+        PaymentIntent paymentIntent = checkoutService.createPaymentIntent(paymentInfo);
+
+        String paymentStr = paymentIntent.toJson();
+
+        return new ResponseEntity<>(paymentStr, HttpStatus.OK);
+    }
+
+
+
+
+
+
 
     //para el crud
     @Autowired
