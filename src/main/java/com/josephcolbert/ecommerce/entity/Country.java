@@ -1,4 +1,4 @@
-package com.josephcolbert.ecommerce.entity;
+/*package com.josephcolbert.ecommerce.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -28,4 +28,4 @@ public class Country {
     @JsonIgnore
     private List<State> states;
 
-}
+}*/

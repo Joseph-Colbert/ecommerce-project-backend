@@ -1,4 +1,4 @@
-package com.josephcolbert.ecommerce.entity;
+/*package com.josephcolbert.ecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,4 +22,4 @@ public class State {
     @JoinColumn(name="country_id")
     private Country country;
 
-}
+}*/

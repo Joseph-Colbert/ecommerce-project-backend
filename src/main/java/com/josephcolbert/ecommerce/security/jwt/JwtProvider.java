@@ -29,7 +29,7 @@ public class JwtProvider {
         PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
         List<String> roles = principalUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
         return Jwts.builder().setSubject(principalUser.getUsername())
-                .claim("roles", roles)
+               .claim("roles", roles)
                .setIssuedAt(new Date())
                .setExpiration(new Date(new Date().getTime() + expiration * 1000))
                .signWith(getSecret(secret))
