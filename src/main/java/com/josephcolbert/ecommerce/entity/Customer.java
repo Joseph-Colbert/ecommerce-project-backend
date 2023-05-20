@@ -44,6 +44,9 @@ public class Customer {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders = new HashSet<>();
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<OrderOnCredit> orderOnCredits = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "rol_user", joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "rol_id"))
@@ -61,6 +64,17 @@ public class Customer {
         }
     }
 
+    public void add (OrderOnCredit orderOnCredit) {
+
+        if (orderOnCredit !=null) {
+            if (orderOnCredits == null) {
+                orderOnCredits = new HashSet<>();
+            }
+            orderOnCredits.add(orderOnCredit);
+            orderOnCredit.setCustomer(this);
+        }
+    }
+
     public Customer(String name, String userName, String email, String password) {
         this.name = name;
         this.userName = userName;
@@ -71,7 +85,7 @@ public class Customer {
     public Customer() {
     }
 
-    public Customer(Long id, String firstName, String lastName, String name, String userName, String email, String password, Set<Order> orders, Set<Rol> roles) {
+    public Customer(Long id, String firstName, String lastName, String name, String userName, String email, String password, Set<Order> orders, Set<OrderOnCredit> orderOnCredits, Set<Rol> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -80,6 +94,7 @@ public class Customer {
         this.email = email;
         this.password = password;
         this.orders = orders;
+        this.orderOnCredits = orderOnCredits;
         this.roles = roles;
     }
 
@@ -161,5 +176,13 @@ public class Customer {
 
     public void setRoles(Set<Rol> roles) {
         this.roles = roles;
+    }
+
+    public Set<OrderOnCredit> getOrderOnCredits() {
+        return orderOnCredits;
+    }
+
+    public void setOrderOnCredits(Set<OrderOnCredit> orderOnCredits) {
+        this.orderOnCredits = orderOnCredits;
     }
 }

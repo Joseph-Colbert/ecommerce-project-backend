@@ -3,10 +3,9 @@ package com.josephcolbert.ecommerce.service;
 import com.josephcolbert.ecommerce.dao.CustomerRepository;
 import com.josephcolbert.ecommerce.dto.PaymentInfo;
 import com.josephcolbert.ecommerce.dto.Purchase;
+import com.josephcolbert.ecommerce.dto.PurchaseOnCredit;
 import com.josephcolbert.ecommerce.dto.PurchaseResponse;
-import com.josephcolbert.ecommerce.entity.Customer;
-import com.josephcolbert.ecommerce.entity.Order;
-import com.josephcolbert.ecommerce.entity.OrderItem;
+import com.josephcolbert.ecommerce.entity.*;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -81,6 +80,45 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
         return PaymentIntent.create(params);
+    }
+
+    @Override
+    @Transactional
+    public PurchaseResponse placeOrderOnCredit(PurchaseOnCredit purchaseOnCredit) {
+        //retrieve the order info from dto
+        OrderOnCredit orderOnCredit = purchaseOnCredit.getOrderOnCredit();
+
+        //generate tracking number
+        String orderTrackingNumber = generateOrderTrackingNumber();
+        orderOnCredit.setOrderTrackingNumber((orderTrackingNumber));
+
+        //populate order with orderItems
+        Set<OrderItemOnCredit> orderItemsOnCredit = purchaseOnCredit.getOrderItemsOnCredit();
+        orderItemsOnCredit.forEach(item -> orderOnCredit.add(item));
+
+        //populate order with shippingAddress
+        orderOnCredit.setShippingAddress(purchaseOnCredit.getShippingAddress());
+
+        //populate customer with order
+        Customer customer = purchaseOnCredit.getCustomer();
+
+        //verificar si es un cliente existente
+        String theEmail = customer.getEmail();
+
+        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+
+        if (customerFromDB != null) {
+            customer = customerFromDB;
+        }
+
+        customer.add(orderOnCredit);
+
+        //save to the database
+        customerRepository.save(customer);
+
+
+        return new PurchaseResponse(orderTrackingNumber);
+
     }
 
     private String generateOrderTrackingNumber() {

@@ -1,9 +1,6 @@
 package com.josephcolbert.ecommerce.controller;
 
-import com.josephcolbert.ecommerce.dto.PaymentInfo;
-import com.josephcolbert.ecommerce.dto.ProductDto;
-import com.josephcolbert.ecommerce.dto.Purchase;
-import com.josephcolbert.ecommerce.dto.PurchaseResponse;
+import com.josephcolbert.ecommerce.dto.*;
 import com.josephcolbert.ecommerce.entity.Product;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.josephcolbert.ecommerce.service.CheckoutService;
@@ -15,24 +12,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/checkout")
 public class CheckoutController {
-
     private final CheckoutService checkoutService;
 
-    public CheckoutController(CheckoutService checkoutService) {
+    public CheckoutController(CheckoutService checkoutService, CheckoutService checkoutOnCreditService) {
         this.checkoutService = checkoutService;
+        this.checkoutOnCreditService = checkoutOnCreditService;
     }
 
+    // para compra directa
     @PostMapping("/purchase")
     public PurchaseResponse placeOrder(@RequestBody Purchase purchase) {
         PurchaseResponse purchaseResponse = checkoutService.placeOrder(purchase);
@@ -48,6 +44,21 @@ public class CheckoutController {
 
         return new ResponseEntity<>(paymentStr, HttpStatus.OK);
     }
+
+
+
+    private final CheckoutService checkoutOnCreditService;
+
+
+
+    // para compra a credito
+    @PostMapping("/purchaseoncredit")
+    public PurchaseResponse placeOrderOnCredit(@RequestBody PurchaseOnCredit purchaseOnCredit) {
+        PurchaseResponse purchaseResponse = checkoutOnCreditService.placeOrderOnCredit(purchaseOnCredit);
+        return purchaseResponse;
+    }
+
+
 
 
 
