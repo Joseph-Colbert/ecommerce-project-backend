@@ -15,10 +15,6 @@ public class UserService {
     @Autowired
     CustomerRepository customerRepository;
 
-    public Optional<Customer> getByUserName(String userName) {
-        return customerRepository.findByUserName(userName);
-    }
-
     public Optional<Customer> getByUserNameOrEmail(String nameOrEmail) {
         return customerRepository.findByUserNameOrEmail(nameOrEmail,nameOrEmail);
     }

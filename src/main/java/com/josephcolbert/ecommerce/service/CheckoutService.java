@@ -18,4 +18,6 @@ public interface CheckoutService {
     // para compra a credito
     PurchaseResponse placeOrderOnCredit(PurchaseOnCredit purchaseOnCredit);
 
+    PaymentIntent createPaymentIntentOnCredit(PaymentInfo paymentInfo) throws StripeException;
+
 }

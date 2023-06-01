@@ -48,6 +48,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         //order.setBillingAddress(purchase.getBillingAddress());
         order.setShippingAddress(purchase.getShippingAddress());
 
+        order.setCustomer(purchase.getCustomer());
         //populate customer with order
         Customer customer = purchase.getCustomer();
 
@@ -62,8 +63,9 @@ public class CheckoutServiceImpl implements CheckoutService{
 
         customer.add(order);
 
+
         //save to the database
-        customerRepository.save(customer);
+        //customerRepository.save(customer);
 
         //return a response
         return new PurchaseResponse(orderTrackingNumber);
@@ -114,11 +116,24 @@ public class CheckoutServiceImpl implements CheckoutService{
         customer.add(orderOnCredit);
 
         //save to the database
-        customerRepository.save(customer);
+        //customerRepository.save(customer);
 
 
         return new PurchaseResponse(orderTrackingNumber);
 
+    }
+
+    @Override
+    public PaymentIntent createPaymentIntentOnCredit(PaymentInfo paymentInfo) throws StripeException {
+
+        List<String> paymentMethodTypes = new ArrayList<>();
+        paymentMethodTypes.add("card");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", paymentInfo.getAmount());
+        params.put("currency", paymentInfo.getCurrency());
+        params.put("payment_method_types", paymentMethodTypes);
+        return PaymentIntent.create(params);
     }
 
     private String generateOrderTrackingNumber() {

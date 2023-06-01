@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.logging.Logger;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/checkout")
 public class CheckoutController {
+
+    private Logger logger = Logger.getLogger(getClass().getName());
     private final CheckoutService checkoutService;
 
     public CheckoutController(CheckoutService checkoutService, CheckoutService checkoutOnCreditService) {
@@ -38,6 +41,7 @@ public class CheckoutController {
     @PostMapping("/payment-intent")
     public ResponseEntity<String> createPaymentIntent(@RequestBody PaymentInfo paymentInfo) throws StripeException {
 
+       logger.info("paymentInfo.amount: " + paymentInfo.getAmount());
         PaymentIntent paymentIntent = checkoutService.createPaymentIntent(paymentInfo);
 
         String paymentStr = paymentIntent.toJson();
@@ -54,9 +58,22 @@ public class CheckoutController {
     // para compra a credito
     @PostMapping("/purchaseoncredit")
     public PurchaseResponse placeOrderOnCredit(@RequestBody PurchaseOnCredit purchaseOnCredit) {
-        PurchaseResponse purchaseResponse = checkoutOnCreditService.placeOrderOnCredit(purchaseOnCredit);
+        PurchaseResponse purchaseResponse = checkoutService.placeOrderOnCredit(purchaseOnCredit);
         return purchaseResponse;
     }
+
+
+    @PostMapping("/payment-intent-on-credit")
+    public ResponseEntity<String> createPaymentIntentOnCredit(@RequestBody PaymentInfo paymentInfo) throws StripeException {
+
+        logger.info("paymentInfo.amount: " + paymentInfo.getAmount());
+        PaymentIntent paymentIntent = checkoutService.createPaymentIntentOnCredit(paymentInfo);
+
+        String paymentStr = paymentIntent.toJson();
+
+        return new ResponseEntity<>(paymentStr, HttpStatus.OK);
+    }
+
 
 
 

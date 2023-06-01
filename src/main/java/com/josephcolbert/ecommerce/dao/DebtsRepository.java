@@ -1,6 +1,7 @@
 package com.josephcolbert.ecommerce.dao;
 
-import com.josephcolbert.ecommerce.entity.Order;
+
+import com.josephcolbert.ecommerce.entity.OrderOnCredit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin("https://localhost:4200")
 @RepositoryRestResource
-public interface OrderRepository extends JpaRepository<Order,Long> {
-
-    Page<Order> findByCustomerUserName(@Param("userName") String email, Pageable pageable);
+public interface DebtsRepository extends JpaRepository<OrderOnCredit,Long> {
+    Page<OrderOnCredit> findByCustomerUserName(@Param("userName") String email, Pageable pageable);
 }
