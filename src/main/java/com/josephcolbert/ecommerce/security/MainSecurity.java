@@ -50,7 +50,7 @@ public class MainSecurity {
         http.authorizeHttpRequests().requestMatchers("/auth/**").permitAll()
                 .requestMatchers("/email-password/**").permitAll()
                 .requestMatchers("/api/**")
-                .authenticated().anyRequest().authenticated();
+                .authenticated().requestMatchers("/api/checkout/**").permitAll().anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint(jwtEntryPoint);
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);

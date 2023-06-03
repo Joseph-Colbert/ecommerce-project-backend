@@ -1,5 +1,6 @@
 package com.josephcolbert.ecommerce.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,13 +56,16 @@ public class OrderOnCredit {
     @UpdateTimestamp
     private Date lastUpdated;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "orderOnCredit")
     private Set<OrderItemOnCredit> orderItemsOnCredit = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shipping_address_id", referencedColumnName = "id")
     private Address shippingAddress;

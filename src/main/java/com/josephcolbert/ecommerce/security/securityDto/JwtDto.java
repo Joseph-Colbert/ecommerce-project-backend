@@ -40,6 +40,7 @@ public class JwtDto {
         this.userName = userName;
     }
 
+
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }

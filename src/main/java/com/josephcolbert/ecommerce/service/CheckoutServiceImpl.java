@@ -10,13 +10,16 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+
 import java.util.*;
 
 @Service
+@Slf4j
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CustomerRepository customerRepository;
@@ -41,7 +44,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         order.setOrderTrackingNumber((orderTrackingNumber));
 
         //populate order with orderItems
-        Set<OrderItem> orderItems = purchase.getOrderItems();
+        List<OrderItem> orderItems = purchase.getOrderItems();
         orderItems.forEach(item -> order.add(item));
 
         //populate order with billingAddress and shippingAddress
@@ -53,19 +56,20 @@ public class CheckoutServiceImpl implements CheckoutService{
         Customer customer = purchase.getCustomer();
 
         //verificar si es un cliente existente
-        String theEmail = customer.getEmail();
+        //String theEmail = customer.getEmail();
 
-        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+        Customer customerFromDB = customerRepository.findByUserName(customer.getUserName());
 
         if (customerFromDB != null) {
             customer = customerFromDB;
         }
+      //  log.info(customer.toString());
 
         customer.add(order);
 
 
         //save to the database
-        //customerRepository.save(customer);
+        customerRepository.save(customer);
 
         //return a response
         return new PurchaseResponse(orderTrackingNumber);
@@ -81,6 +85,8 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("amount", paymentInfo.getAmount());
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
+        params.put("description","Compra a directa");
+        //params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
 
@@ -105,9 +111,9 @@ public class CheckoutServiceImpl implements CheckoutService{
         Customer customer = purchaseOnCredit.getCustomer();
 
         //verificar si es un cliente existente
-        String theEmail = customer.getEmail();
+       // String theEmail = customer.getEmail();
 
-        Customer customerFromDB = customerRepository.findByEmail(theEmail);
+        Customer customerFromDB = customerRepository.findByUserName(customer.getUserName());
 
         if (customerFromDB != null) {
             customer = customerFromDB;
@@ -116,7 +122,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         customer.add(orderOnCredit);
 
         //save to the database
-        //customerRepository.save(customer);
+        customerRepository.save(customer);
 
 
         return new PurchaseResponse(orderTrackingNumber);
@@ -133,6 +139,8 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("amount", paymentInfo.getAmount());
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
+        params.put("description","Compra a crédito");
+        //params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
 
