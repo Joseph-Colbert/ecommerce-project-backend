@@ -21,13 +21,16 @@ public class OrderItemOnCredit {
     @Column(name="image_url")
     private String imageUrl;
 
+    @Column(name= "payment")
+    private BigDecimal payment;
+
     @Column(name="unit_price")
     private BigDecimal unitPrice;
 
     @Column(name="unit_price_on_credit")
     private BigDecimal unitPriceOnCredit;
 
-    @Column(name="monthly_fees")  // monto mensual a pagar
+    @Column(name="monthly_fees")  // cantidad mensual a pagar
     private BigDecimal monthly_fees;
 
     @Column(name="number_of_fees")  // numero de cuotas pagadas
