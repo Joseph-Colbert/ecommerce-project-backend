@@ -26,7 +26,7 @@ public class ProductDto {
     private boolean active;
 
 
-    private int unitsInStock;
+    private Integer unitsInStock;
 
     private Date dateCreated;
 
@@ -34,7 +34,7 @@ public class ProductDto {
 
 
     //crud del sistema
-    public ProductDto(String sku, String name, String description, BigDecimal unitPrice, String imageUrl, boolean active, int unitsInStock, Date dateCreated, Date lastUpdated) {
+    public ProductDto(String sku, String name, String description, BigDecimal unitPrice, String imageUrl, boolean active, Integer unitsInStock, Date dateCreated, Date lastUpdated) {
 
         this.sku = sku;
         this.name = name;
@@ -95,7 +95,7 @@ public class ProductDto {
         this.active = active;
     }
 
-    public int getUnitsInStock() {
+    public Integer getUnitsInStock() {
         return unitsInStock;
     }
 
