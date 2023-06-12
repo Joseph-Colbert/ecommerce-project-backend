@@ -1,4 +1,4 @@
-package com.josephcolbert.ecommerce.entity;
+/*package com.josephcolbert.ecommerce.entity;
 
 import lombok.Data;
 
@@ -22,3 +22,4 @@ public class UserEnterprise {
     @Column(name = "usertype")
     private String usertype;
 }
+*/

@@ -19,7 +19,7 @@ public class ProductController {
     private ProductService productService;
 
 
-    @PutMapping("/{id}")
+    @PutMapping("edit/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
         // Verificar si el producto existe
         Optional<Product> optionalProduct = productService.getOne(Math.toIntExact(id));
@@ -66,7 +66,7 @@ public class ProductController {
         return ResponseEntity.ok("Producto actualizado exitosamente.");
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
         // Verificar si el producto existe
         if (!productService.existById(Math.toIntExact(id))) {

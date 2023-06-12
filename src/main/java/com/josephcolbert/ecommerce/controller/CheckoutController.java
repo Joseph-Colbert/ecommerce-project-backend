@@ -76,6 +76,29 @@ public class CheckoutController {
 
 
 
+    // siguiente pago para compra a credito
+    @PutMapping("/purchaseoncreditpayment")
+    public MessageDto placeOrderOnCreditPayment(@RequestBody PurchaseOnCreditPayment purchaseOnCreditPayment) {
+        MessageDto messageDto = checkoutService.placeOrderOnCreditPayment(purchaseOnCreditPayment);
+        return messageDto;
+    }
+
+
+    @PostMapping("/new-payment-intent-on-credit")
+    public ResponseEntity<String> createPaymentIntentOnCreditA(@RequestBody PaymentInfo paymentInfo) throws StripeException {
+
+        logger.info("paymentInfo.amount: " + paymentInfo.getAmount());
+        PaymentIntent paymentIntent = checkoutService.createPaymentIntentOnCreditA(paymentInfo);
+
+        String paymentStr = paymentIntent.toJson();
+
+        return new ResponseEntity<>(paymentStr, HttpStatus.OK);
+    }
+
+
+
+
+
 
 
 

@@ -31,10 +31,10 @@ public class OrderItemOnCredit {
     private BigDecimal unitPriceOnCredit;
 
     @Column(name="monthly_fees")  // cantidad mensual a pagar
-    private BigDecimal monthly_fees;
+    private BigDecimal monthlyFees;
 
     @Column(name="number_of_fees")  // numero de cuotas pagadas
-    private int number_of_fees;
+    private int numberOfFees;
 
     @Column(name="quantity")
     private int quantity;

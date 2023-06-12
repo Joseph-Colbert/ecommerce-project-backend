@@ -1,18 +1,15 @@
 package com.josephcolbert.ecommerce.service;
 
 import com.josephcolbert.ecommerce.dao.CustomerRepository;
-import com.josephcolbert.ecommerce.dto.PaymentInfo;
-import com.josephcolbert.ecommerce.dto.Purchase;
-import com.josephcolbert.ecommerce.dto.PurchaseOnCredit;
-import com.josephcolbert.ecommerce.dto.PurchaseResponse;
+import com.josephcolbert.ecommerce.dto.*;
 import com.josephcolbert.ecommerce.entity.*;
+import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 
@@ -32,6 +29,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         Stripe.apiKey = secretKey;
     }
 
+    //Pagos directos
     @Override
     @Transactional
     public PurchaseResponse placeOrder(Purchase purchase) {
@@ -90,6 +88,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         return PaymentIntent.create(params);
     }
 
+    //pagos a credito
     @Override
     @Transactional
     public PurchaseResponse placeOrderOnCredit(PurchaseOnCredit purchaseOnCredit) {
@@ -143,6 +142,60 @@ public class CheckoutServiceImpl implements CheckoutService{
         //params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
+
+
+    //reiteracion de pagos a credito
+    @Override
+    @Transactional
+    public MessageDto placeOrderOnCreditPayment(PurchaseOnCreditPayment purchaseOnCreditPayment) {
+        //retrieve the order info from dto
+        OrderOnCredit orderOnCredit = purchaseOnCreditPayment.getOrderOnCredit();
+
+        //generate tracking number
+        /*String orderTrackingNumber = generateOrderTrackingNumber();
+        orderOnCredit.setOrderTrackingNumber((orderTrackingNumber));*/
+
+        //populate order with orderItems
+        Set<OrderItemOnCredit> orderItemsOnCredit = purchaseOnCreditPayment.getOrderItemsOnCredit();
+        orderItemsOnCredit.forEach(item -> orderOnCredit.add(item));
+
+        //populate customer with order
+        Customer customer = purchaseOnCreditPayment.getCustomer();
+
+        //verificar si es un cliente existente
+        // String theEmail = customer.getEmail();
+
+        Customer customerFromDB = customerRepository.findByUserName(customer.getUserName());
+
+        if (customerFromDB != null) {
+            customer = customerFromDB;
+        }
+
+        customer.add(orderOnCredit);
+
+        //save to the database
+        customerRepository.save(customer);
+
+
+        return new MessageDto("Pago exitoso");
+
+    }
+
+    @Override
+    public PaymentIntent createPaymentIntentOnCreditA(PaymentInfo paymentInfo) throws StripeException {
+
+        List<String> paymentMethodTypes = new ArrayList<>();
+        paymentMethodTypes.add("card");
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", paymentInfo.getAmount());
+        params.put("currency", paymentInfo.getCurrency());
+        params.put("payment_method_types", paymentMethodTypes);
+        params.put("description","Siguiente pago de compra a crédito");
+        //params.put("receipt_email", paymentInfo.getReceiptEmail());
+        return PaymentIntent.create(params);
+    }
+
 
     private String generateOrderTrackingNumber() {
         // generate a random UUID number (UUID version-4) (Universal Unique IDentifier)

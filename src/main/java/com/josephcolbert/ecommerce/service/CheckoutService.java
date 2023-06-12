@@ -1,9 +1,7 @@
 package com.josephcolbert.ecommerce.service;
 
-import com.josephcolbert.ecommerce.dto.PaymentInfo;
-import com.josephcolbert.ecommerce.dto.Purchase;
-import com.josephcolbert.ecommerce.dto.PurchaseOnCredit;
-import com.josephcolbert.ecommerce.dto.PurchaseResponse;
+import com.josephcolbert.ecommerce.dto.*;
+import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
 
@@ -19,5 +17,11 @@ public interface CheckoutService {
     PurchaseResponse placeOrderOnCredit(PurchaseOnCredit purchaseOnCredit);
 
     PaymentIntent createPaymentIntentOnCredit(PaymentInfo paymentInfo) throws StripeException;
+
+    // para los siguientes pagos a credito
+    MessageDto placeOrderOnCreditPayment(PurchaseOnCreditPayment purchaseOnCreditPayment);
+
+    PaymentIntent createPaymentIntentOnCreditA(PaymentInfo paymentInfo) throws StripeException;
+
 
 }

@@ -16,8 +16,8 @@ public class Enterprise {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_enterprise_enterprise_id", nullable = false)
-    private UserEnterprise user;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "enterprise")    // por la coleccion de productos
     private Set<Product> products;
@@ -48,9 +48,9 @@ public class Enterprise {
 
     }
 
-    public Enterprise(Long id, UserEnterprise user, Set<Product> products, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
+    public Enterprise(Long id, Customer customer, Set<Product> products, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
         this.id = id;
-        this.user = user;
+        this.customer = customer;
         this.products = products;
         this.name = name;
         this.imageUrl = imageUrl;
