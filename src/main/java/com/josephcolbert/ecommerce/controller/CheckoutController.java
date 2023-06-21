@@ -1,6 +1,7 @@
 package com.josephcolbert.ecommerce.controller;
 
 import com.josephcolbert.ecommerce.dto.*;
+import com.josephcolbert.ecommerce.entity.OrderItemOnCredit;
 import com.josephcolbert.ecommerce.entity.Product;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
 import com.josephcolbert.ecommerce.service.CheckoutService;
@@ -78,8 +79,8 @@ public class CheckoutController {
 
     // siguiente pago para compra a credito
     @PutMapping("/purchaseoncreditpayment")
-    public MessageDto placeOrderOnCreditPayment(@RequestBody PurchaseOnCreditPayment purchaseOnCreditPayment) {
-        MessageDto messageDto = checkoutService.placeOrderOnCreditPayment(purchaseOnCreditPayment);
+    public MessageDto placeOrderOnCreditPayment(@RequestBody OrderItemOnCredit orderItemOnCredit) {
+        MessageDto messageDto = checkoutService.placeOrderOnCreditPayment(orderItemOnCredit);
         return messageDto;
     }
 

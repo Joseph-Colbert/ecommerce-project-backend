@@ -1,6 +1,7 @@
 package com.josephcolbert.ecommerce.service;
 
 import com.josephcolbert.ecommerce.dao.CustomerRepository;
+import com.josephcolbert.ecommerce.dao.OrderItemOnCreditRepository;
 import com.josephcolbert.ecommerce.dto.*;
 import com.josephcolbert.ecommerce.entity.*;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
@@ -20,10 +21,12 @@ import java.util.*;
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CustomerRepository customerRepository;
+    private final OrderItemOnCreditRepository orderItemOnCreditRepository;
 
     public CheckoutServiceImpl(CustomerRepository customerRepository,
-                               @Value("${stripe.key.secret}") String secretKey) {
+                               @Value("${stripe.key.secret}") String secretKey, OrderItemOnCreditRepository orderItemOnCreditRepository) {
         this.customerRepository = customerRepository;
+        this.orderItemOnCreditRepository = orderItemOnCreditRepository;
 
         // Initialize Stripe API with secret key
         Stripe.apiKey = secretKey;
@@ -84,7 +87,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
         params.put("description","Compra a directa");
-        //params.put("receipt_email", paymentInfo.getReceiptEmail());
+        params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
 
@@ -139,7 +142,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
         params.put("description","Compra a crédito");
-        //params.put("receipt_email", paymentInfo.getReceiptEmail());
+        params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
 
@@ -147,34 +150,10 @@ public class CheckoutServiceImpl implements CheckoutService{
     //reiteracion de pagos a credito
     @Override
     @Transactional
-    public MessageDto placeOrderOnCreditPayment(PurchaseOnCreditPayment purchaseOnCreditPayment) {
-        //retrieve the order info from dto
-        OrderOnCredit orderOnCredit = purchaseOnCreditPayment.getOrderOnCredit();
-
-        //generate tracking number
-        /*String orderTrackingNumber = generateOrderTrackingNumber();
-        orderOnCredit.setOrderTrackingNumber((orderTrackingNumber));*/
-
-        //populate order with orderItems
-        Set<OrderItemOnCredit> orderItemsOnCredit = purchaseOnCreditPayment.getOrderItemsOnCredit();
-        orderItemsOnCredit.forEach(item -> orderOnCredit.add(item));
-
-        //populate customer with order
-        Customer customer = purchaseOnCreditPayment.getCustomer();
-
-        //verificar si es un cliente existente
-        // String theEmail = customer.getEmail();
-
-        Customer customerFromDB = customerRepository.findByUserName(customer.getUserName());
-
-        if (customerFromDB != null) {
-            customer = customerFromDB;
-        }
-
-        customer.add(orderOnCredit);
-
-        //save to the database
-        customerRepository.save(customer);
+    public MessageDto placeOrderOnCreditPayment(OrderItemOnCredit orderItemOnCredit) {
+      OrderItemOnCredit orderItemOnCredit1 = orderItemOnCreditRepository.findById(orderItemOnCredit.getId()).get();
+      orderItemOnCredit1.setNumberOfFees(orderItemOnCredit1.getNumberOfFees() + 1);
+              orderItemOnCreditRepository.save(orderItemOnCredit1);
 
 
         return new MessageDto("Pago exitoso");
@@ -192,7 +171,7 @@ public class CheckoutServiceImpl implements CheckoutService{
         params.put("currency", paymentInfo.getCurrency());
         params.put("payment_method_types", paymentMethodTypes);
         params.put("description","Siguiente pago de compra a crédito");
-        //params.put("receipt_email", paymentInfo.getReceiptEmail());
+        params.put("receipt_email", paymentInfo.getReceiptEmail());
         return PaymentIntent.create(params);
     }
 
