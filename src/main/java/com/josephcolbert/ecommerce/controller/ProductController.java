@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.Optional;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
@@ -20,9 +21,9 @@ public class ProductController {
 
 
     @PutMapping("edit/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable("id") Long id, @RequestBody ProductDto productDto) {
+    public ResponseEntity<?> updateProduct(@PathVariable("id") Integer id, @RequestBody ProductDto productDto) {
         // Verificar si el producto existe
-        Optional<Product> optionalProduct = productService.getOne(Math.toIntExact(id));
+        Optional<Product> optionalProduct = productService.getOne(id);
         if (optionalProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -63,13 +64,13 @@ public class ProductController {
         // Guardar el producto actualizado en la base de datos
         productService.save(product);
 
-        return ResponseEntity.ok("Producto actualizado exitosamente.");
+        return ResponseEntity.ok("Producto editado exitosamente");
     }
 
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteProduct(@PathVariable("id") Integer id) {
         // Verificar si el producto existe
-        if (!productService.existById(Math.toIntExact(id))) {
+        if (!productService.existById(id)) {
             return ResponseEntity.notFound().build();
         }
 

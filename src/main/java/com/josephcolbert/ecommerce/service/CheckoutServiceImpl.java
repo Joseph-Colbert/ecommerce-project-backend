@@ -1,7 +1,8 @@
 package com.josephcolbert.ecommerce.service;
 
 import com.josephcolbert.ecommerce.dao.CustomerRepository;
-import com.josephcolbert.ecommerce.dao.OrderItemOnCreditRepository;
+import com.josephcolbert.ecommerce.dao.DebtsItemRepository;
+import com.josephcolbert.ecommerce.dao.DebtsRepository;
 import com.josephcolbert.ecommerce.dto.*;
 import com.josephcolbert.ecommerce.entity.*;
 import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
@@ -21,10 +22,10 @@ import java.util.*;
 public class CheckoutServiceImpl implements CheckoutService{
 
     private CustomerRepository customerRepository;
-    private final OrderItemOnCreditRepository orderItemOnCreditRepository;
+    private final DebtsItemRepository orderItemOnCreditRepository;
 
     public CheckoutServiceImpl(CustomerRepository customerRepository,
-                               @Value("${stripe.key.secret}") String secretKey, OrderItemOnCreditRepository orderItemOnCreditRepository) {
+                               @Value("${stripe.key.secret}") String secretKey, DebtsItemRepository orderItemOnCreditRepository) {
         this.customerRepository = customerRepository;
         this.orderItemOnCreditRepository = orderItemOnCreditRepository;
 
