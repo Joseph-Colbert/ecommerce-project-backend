@@ -48,8 +48,8 @@ public class Enterprise {
 
     }
 
-    public Enterprise(Long id, Customer customer, Set<Product> products, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
-        this.id = id;
+    public Enterprise(Customer customer, Set<Product> products, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
+
         this.customer = customer;
         this.products = products;
         this.name = name;
@@ -60,4 +60,17 @@ public class Enterprise {
         this.categoryE = categoryE;
         this.address = address;
     }
+
+    public Enterprise(Customer customer, String name, String imageUrl, String mail, String phone, String ci, EnterpriseCategory categoryE, String address) {
+        this.customer = customer;
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.mail = mail;
+        this.phone = phone;
+        this.ci = ci;
+        this.categoryE = categoryE;
+        this.address = address;
+    }
+
+
 }

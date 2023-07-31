@@ -33,8 +33,8 @@ public class UserService {
         return customerRepository.existsByEmail(email);
     }
 
-    public void save(Customer customer) {
-        customerRepository.save(customer);
+    public Customer save(Customer customer) {
+        return customerRepository.save(customer);
     }
 
 }

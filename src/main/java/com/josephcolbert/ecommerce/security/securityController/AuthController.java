@@ -1,11 +1,9 @@
 package com.josephcolbert.ecommerce.security.securityController;
 
 import com.josephcolbert.ecommerce.entity.Customer;
+import com.josephcolbert.ecommerce.entity.Enterprise;
 import com.josephcolbert.ecommerce.security.jwt.JwtProvider;
-import com.josephcolbert.ecommerce.security.securityDto.JwtDto;
-import com.josephcolbert.ecommerce.security.securityDto.LoginUser;
-import com.josephcolbert.ecommerce.security.securityDto.MessageDto;
-import com.josephcolbert.ecommerce.security.securityDto.NewUser;
+import com.josephcolbert.ecommerce.security.securityDto.*;
 import com.josephcolbert.ecommerce.security.securityEntity.Rol;
 import com.josephcolbert.ecommerce.security.securityEnums.RolName;
 import com.josephcolbert.ecommerce.security.securityService.RolService;
@@ -79,6 +77,31 @@ public class AuthController {
         UserDetails userDetails = (UserDetails)authentication.getPrincipal();
         JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(),userDetails.getAuthorities());
         return new ResponseEntity(jwtDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/nuevoE")
+    public ResponseEntity<?> nuevoE(@Valid @RequestBody NewEnterprise newEnterprise, BindingResult bindingResult) {
+        if (bindingResult.hasErrors())
+            return new ResponseEntity(new MessageDto("Campos mal ingresados o email inválido"), HttpStatus.BAD_REQUEST);
+        if(userService.existsByUserName(newEnterprise.getUserName()))
+            return new ResponseEntity(new MessageDto("Ese nombre ya existe"), HttpStatus.BAD_REQUEST);
+        if(userService.existsByEmail(newEnterprise.getEmail()))
+            return new ResponseEntity(new MessageDto("Ese email ya existe"), HttpStatus.BAD_REQUEST);
+
+        Customer customer = new Customer(newEnterprise.getName(), newEnterprise.getUserName(), newEnterprise.getEmail(), passwordEncoder.encode((newEnterprise.getPassword())));
+
+        Set<Rol> roles = new HashSet<>();
+        roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
+
+        if(newEnterprise.getRoles().contains("admin"))
+            roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
+        customer.setRoles(roles);
+        Customer customerCreado = userService.save(customer);
+        Enterprise enterprise = new Enterprise(customerCreado, newEnterprise.getNameE(),  newEnterprise.getImage_url(),
+                                    newEnterprise.getMail(), newEnterprise.getPhone(), newEnterprise.getCi(),
+                                    newEnterprise.getCategoryE(), newEnterprise.getAddress());
+        //userService.save();
+        return new ResponseEntity(new MessageDto("Usuario registrado"), HttpStatus.CREATED);
     }
 
 }
