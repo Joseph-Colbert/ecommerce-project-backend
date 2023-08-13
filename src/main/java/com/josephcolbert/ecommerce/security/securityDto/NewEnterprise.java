@@ -23,13 +23,13 @@ public class NewEnterprise {
     private String mail;
     private String nameE;
     private String  phone;
-    private EnterpriseCategory categoryE;
+    private Long categoryE;
 
-    public EnterpriseCategory getCategoryE() {
+    public Long getCategoryE() {
         return categoryE;
     }
 
-    public void setCategoryE(EnterpriseCategory categoryE) {
+    public void setCategoryE(Long categoryE) {
         this.categoryE = categoryE;
     }
 

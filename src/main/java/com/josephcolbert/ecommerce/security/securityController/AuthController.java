@@ -1,7 +1,10 @@
 package com.josephcolbert.ecommerce.security.securityController;
 
+import com.josephcolbert.ecommerce.dao.EnterpriseCategoryRepository;
+import com.josephcolbert.ecommerce.dao.EnterpriseRepository;
 import com.josephcolbert.ecommerce.entity.Customer;
 import com.josephcolbert.ecommerce.entity.Enterprise;
+import com.josephcolbert.ecommerce.entity.EnterpriseCategory;
 import com.josephcolbert.ecommerce.security.jwt.JwtProvider;
 import com.josephcolbert.ecommerce.security.securityDto.*;
 import com.josephcolbert.ecommerce.security.securityEntity.Rol;
@@ -34,6 +37,12 @@ public class AuthController {
 
     @Autowired
     AuthenticationManager authenticationManager;
+
+    @Autowired
+    EnterpriseRepository enterpriseRepository;
+
+    @Autowired
+    EnterpriseCategoryRepository enterpriseCategoryRepository;
 
     @Autowired
     UserService userService;
@@ -97,11 +106,12 @@ public class AuthController {
             roles.add(rolService.getByRolName(RolName.ROLE_ADMIN).get());
         customer.setRoles(roles);
         Customer customerCreado = userService.save(customer);
-        Enterprise enterprise = new Enterprise(customerCreado, newEnterprise.getNameE(),  newEnterprise.getImage_url(),
-                                    newEnterprise.getMail(), newEnterprise.getPhone(), newEnterprise.getCi(),
-                                    newEnterprise.getCategoryE(), newEnterprise.getAddress());
-        //userService.save();
-        return new ResponseEntity(new MessageDto("Usuario registrado"), HttpStatus.CREATED);
+        EnterpriseCategory enterpriseCategory = enterpriseCategoryRepository.getReferenceById(newEnterprise.getCategoryE());
+        Enterprise enterprise = new Enterprise(customerCreado, newEnterprise.getNameE(), newEnterprise.getImage_url(),
+                                    newEnterprise.getMail(), newEnterprise.getPhone(), newEnterprise.getCi(), enterpriseCategory
+                                    , newEnterprise.getAddress());
+        enterpriseRepository.save(enterprise);
+        return new ResponseEntity(new MessageDto("Empresa registrado"), HttpStatus.CREATED);
     }
 
 }
